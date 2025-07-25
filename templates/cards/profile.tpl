@@ -96,6 +96,14 @@
             <strong>{location}</strong>
             <br/>
             <!-- ENDIF location -->
+
+            <!-- IF isAdmin -->
+            <span>[[user:joined]]</span>
+            <span class="timeago" title="{joindateISO}"></span>
+            
+            <span>[[user:lastonline]]</span>
+            <span class="timeago" title="{lastonlineISO}"></span>
+            <!-- ENDIF isAdmin -->
         </div>
     </div>
 </div>
