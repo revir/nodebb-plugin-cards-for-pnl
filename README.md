@@ -1,7 +1,9 @@
-# NodeBB Hover Cards plugin
+# NodeBB Hover Cards Plugin
 
-This NodeBB plugin will add a hover card to every profile link. When hovering over a profile link a card will be created with some information about that user.
+This NodeBB plugin adds a hover card to every profile link. When hovering over a profile link, a card appears displaying information about that user.
 
-## Installation
+> **Note:**  
+> This plugin is a fork of the original [nodebb-plugin-cards](https://github.com/Schamper/nodebb-plugin-cards). Please use the original plugin unless you are part of the [PNL community]. This fork includes PNL-specific settings and is intended for use within the [PNL community] only.
 
-    npm install nodebb-plugin-cards
+
+[PNL community]: https://pnl.dev

@@ -1,15 +1,11 @@
 {
-	"id": "nodebb-plugin-cards",
-	"name": "Hover Cards",
-	"description": "NodeBB plugin that adds a hover card to every profile link",
-	"url": "https://github.com/Schamper/nodebb-plugin-cards",
-	"library": "library.js",
-	"hooks": [],
-	"scss": [
-		"public/scss/style.scss"
-	],
-	"scripts": [
-		"public/js/main.js"
-	],
-	"templates": "templates"
+  "id": "nodebb-plugin-cards-for-pnl",
+  "name": "Hover Cards",
+  "description": "NodeBB plugin that adds a hover card to every profile link for PNL community.",
+  "url": "https://github.com/revir/nodebb-plugin-cards-for-pnl",
+  "library": "library.js",
+  "hooks": [],
+  "scss": ["public/scss/style.scss"],
+  "scripts": ["public/js/main.js"],
+  "templates": "templates"
 }

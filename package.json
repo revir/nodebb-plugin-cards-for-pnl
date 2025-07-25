@@ -1,28 +1,31 @@
 {
-	"name": "nodebb-plugin-cards",
-	"version": "0.4.1",
-	"description": "NodeBB plugin that extends the mentions plugin with hover cards",
-	"main": "library.js",
-	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1"
-	},
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/Schamper/nodebb-plugin-cards"
-	},
-	"keywords": [
-		"nodebb",
-		"plugin",
-		"profile",
-		"card"
-	],
-	"author": "Schamper <mrwafflewaffle@aim.com>",
-	"license": "MIT",
-	"bugs": {
-		"url": "https://github.com/Schamper/nodebb-plugin-cards/issues"
-	},
-	"dependencies": {},
-	"nbbpm": {
-		"compatibility": "^4.0.0"
-	}
+  "name": "nodebb-plugin-cards-for-pnl",
+  "version": "0.4.1",
+  "description": "NodeBB plugin that extends the mentions plugin with hover cards for PNL community.",
+  "main": "library.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "symlink-to-nodebb": "rm -rf ../NodeBB/node_modules/nodebb-plugin-cards-for-pnl && ln -s $(pwd) ../NodeBB/node_modules/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/revir/nodebb-plugin-cards-for-pnl"
+  },
+  "keywords": [
+    "nodebb",
+    "plugin",
+    "profile",
+    "card",
+    "pnl"
+  ],
+  "author": "Revir",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/revir/nodebb-plugin-cards-for-pnl/issues"
+  },
+  "dependencies": {},
+  "nbbpm": {
+    "compatibility": "^4.0.0"
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }
