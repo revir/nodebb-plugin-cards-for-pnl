@@ -78,6 +78,30 @@
             </div>
         </div>
 
+        <div class="user-languages">
+            <!-- IF learningLanguages -->
+            <div class="language-row">
+                <span class="language-label">[[pnlpal:learning-languages]]:</span>
+                <span class="language-badges">
+                    {{{each learningLanguages }}}
+                    <span class="badge bg-primary">{@value}</span>
+                    {{{end}}}
+                </span>
+            </div>
+            <!-- ENDIF learningLanguages -->
+        
+            <!-- IF fluentLanguages -->
+            <div class="language-row">
+                <span class="language-label">[[pnlpal:fluent-languages]]:</span>
+                <span class="language-badges">
+                    {{{each fluentLanguages }}}
+                    <span class="badge bg-success">{@value}</span>
+                    {{{end}}}
+                </span>
+            </div>
+            <!-- ENDIF fluentLanguages -->
+        </div>
+
         <div class="text-center profile-meta">
             <!-- IF email -->
             <span><i class="fa fa-envelope-open-o" aria-hidden="true"></i></span>

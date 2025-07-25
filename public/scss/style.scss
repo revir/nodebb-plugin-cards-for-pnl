@@ -80,7 +80,7 @@ $cards-cover-height: 100px;
   .profile-meta {
     font-size: 10px;
     color: #777;
-    margin-top: 25px;
+    margin-top: 15px;
     margin-bottom: 10px;
 
     strong {
@@ -91,4 +91,39 @@ $cards-cover-height: 100px;
 
 .popover {
   z-index: 1000000;
+}
+
+.profile-card-info {
+  .user-languages {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 24px;
+    width: max-content;
+    max-width: 100%;
+  }
+
+  .language-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .language-label {
+    font-weight: 500;
+    text-align: right;
+    min-width: 68px; // Fixed width for labels
+  }
+
+  .language-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.1rem;
+    .badge {
+      margin-right: 0.25rem; // Space between badges
+    }
+  }
 }
