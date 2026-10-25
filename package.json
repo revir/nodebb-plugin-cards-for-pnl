@@ -1,6 +1,6 @@
 {
   "name": "nodebb-plugin-cards-for-pnl",
-  "version": "0.4.1",
+  "version": "1.0.0",
   "description": "NodeBB plugin that extends the mentions plugin with hover cards for PNL community.",
   "main": "library.js",
   "scripts": {
