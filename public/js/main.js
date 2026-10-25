@@ -2,18 +2,22 @@
 
 /* globals app, utils, $ */
 
-(function(window) {
-	var delay, targetCard, currentCard,
-		events = 'mouseenter.card mouseleave.card',
-		exitEvent = 'click.card',
-		selector = 'a[href*="/user/"]:not(.profile-card a)',
-		regex = /(\/user\/([^/]+))(?:\/$|$)/;
+(function (window) {
+	var delay,
+		targetCard,
+		currentCard,
+		events = "mouseenter.card mouseleave.card",
+		exitEvent = "click.card",
+		selector =
+			'a[href*="/user/"]:not(.profile-card a), a[href*="/uid/"]:not(.profile-card a)',
+		// Matches /user/:userslug and /uid/:uid (used by mentions)
+		regex = /(\/(?:user|uid)\/([^/]+))(?:\/$|$)/;
 
-	$(document).ready(function() {
+	$(document).ready(function () {
 		// Listen for events on body, we don't have to re-add on every ajaxify
 		$(document.body).off(events, selector).on(events, selector, onEvent);
 
-		$(window).on('action:ajaxify.start', function() {
+		$(window).on("action:ajaxify.start", function () {
 			if (delay) {
 				clearTimeout(delay);
 				delay = 0;
@@ -30,13 +34,13 @@
 
 	function onEvent(e) {
 		var target = $(e.currentTarget),
-			href = regex.exec(target.attr('href'));
+			href = regex.exec(target.attr("href"));
 
 		// Check if it's a valid link
 		if (href && href[1] && href[2]) {
 			// Destroy tooltips added by NodeBB
-			if (target.children('img')) {
-				target.children('img').tooltip('dispose');
+			if (target.children("img")) {
+				target.children("img").tooltip("dispose");
 			}
 
 			// If it's a mouseenter event, set a timeout to create a new card
@@ -52,135 +56,192 @@
 	}
 
 	function toggleFollow($card, type, uid, username) {
-		require(['api', 'alerts'], function (api, alerts) {
-			api[type === 'follow' ? 'put' : 'del']('/users/' + uid + '/follow', undefined, function (err) {
-				if (err) {
-					return alerts.error(err);
-				}
+		require(["api", "alerts"], function (api, alerts) {
+			api[type === "follow" ? "put" : "del"](
+				"/users/" + uid + "/follow",
+				undefined,
+				function (err) {
+					if (err) {
+						return alerts.error(err);
+					}
 
-				$('[component="account/follow"]').toggleClass('hide', type === 'follow');
-				$('[component="account/unfollow"]').toggleClass('hide', type === 'unfollow');
-				alerts.success('[[global:alert.' + type + ', ' + username + ']]');
-			});
+					$('[component="account/follow"]').toggleClass(
+						"hide",
+						type === "follow",
+					);
+					$('[component="account/unfollow"]').toggleClass(
+						"hide",
+						type === "unfollow",
+					);
+					alerts.success("[[global:alert." + type + ", " + username + "]]");
+				},
+			);
+		});
+	}
+
+	function resolveUserUrl(url, callback) {
+		var uidMatch = /^\/uid\/(\d+)$/.exec(url);
+		if (!uidMatch) {
+			return callback(url);
+		}
+
+		// Look up the userslug for /uid/:uid links
+		$.ajax({
+			url: config.relative_path + "/api/user/uid/" + uidMatch[1],
+			success: function (user) {
+				if (user && user.userslug) {
+					callback("/user/" + user.userslug);
+				}
+			},
+			cache: false,
 		});
 	}
 
 	function createCard(target, url) {
-		return setTimeout(function() {
-			var api = config.relative_path + '/api' + url;
-			$.ajax({
-				url: api,
-				success: function(result) {
-					app.parseAndTranslate('cards/profile', result, function(cardHTML) {
-						// If target is not the currentCard and if the target is the targetCard
-						if (!target.is(currentCard) && target.is(targetCard)) {
-							// If there's an existing card, destroy it
-							if (currentCard) {
-								destroyCard(currentCard, true);
-							}
+		return setTimeout(function () {
+			resolveUserUrl(url, function (userUrl) {
+				loadCard(target, userUrl);
+			});
+		}, 500);
+	}
 
-							// Bind chat button
-							cardHTML.find('[component="account/chat"]').on('click', function() {
-								socket.emit('modules.chats.hasPrivateChat', result.uid, async function (err, roomId) {
-									if (err) {
-										require(['alerts'], function (alerts) {
-											alerts.error(err.message);
-										});
-									}
-									const chat = await app.require('chat');
-									if (roomId) {
-										chat.openChat(roomId);
-									} else {
-										chat.newChat(result.uid);
-									}
-								});
+	function loadCard(target, url) {
+		var api = config.relative_path + "/api" + url;
+		$.ajax({
+			url: api,
+			success: function (result) {
+				app.parseAndTranslate("cards/profile", result, function (cardHTML) {
+					// If target is not the currentCard and if the target is the targetCard
+					if (!target.is(currentCard) && target.is(targetCard)) {
+						// If there's an existing card, destroy it
+						if (currentCard) {
+							destroyCard(currentCard, true);
+						}
+
+						// Bind chat button
+						cardHTML
+							.find('[component="account/chat"]')
+							.on("click", function () {
+								socket.emit(
+									"modules.chats.hasPrivateChat",
+									result.uid,
+									async function (err, roomId) {
+										if (err) {
+											require(["alerts"], function (alerts) {
+												alerts.error(err.message);
+											});
+										}
+										const chat = await app.require("chat");
+										if (roomId) {
+											chat.openChat(roomId);
+										} else {
+											chat.newChat(result.uid);
+										}
+									},
+								);
 								return false;
 							});
-							// Bind follow and unfollow
-							cardHTML.find('[component="account/follow"]').on('click', function(){
-								toggleFollow(cardHTML, 'follow', result.uid, result.username);
+						// Bind follow and unfollow
+						cardHTML
+							.find('[component="account/follow"]')
+							.on("click", function () {
+								toggleFollow(cardHTML, "follow", result.uid, result.username);
 								return false;
 							});
-							cardHTML.find('[component="account/unfollow"]').on('click', function(){
-								toggleFollow(cardHTML, 'unfollow', result.uid, result.username);
+						cardHTML
+							.find('[component="account/unfollow"]')
+							.on("click", function () {
+								toggleFollow(
+									cardHTML,
+									"unfollow",
+									result.uid,
+									result.username,
+								);
 								return false;
 							});
 
-							// Create card
-							target.popover({
+						// Create card
+						target
+							.popover({
 								html: true,
 								content: cardHTML,
 								placement: calculatePopoverPosition(target),
-								trigger: 'manual',
-								container: 'body',
-								template: '<div class="popover" role="tooltip"><div class="popover-arrow"></div><div class="popover-body"></div></div>'
-							}).popover('show');
+								trigger: "manual",
+								container: "body",
+								template:
+									'<div class="popover" role="tooltip"><div class="popover-arrow"></div><div class="popover-body"></div></div>',
+							})
+							.popover("show");
 
-							// Bind some other stuff
-							$('.profile-card .timeago').timeago();
+						// Bind some other stuff
+						$(".profile-card .timeago").timeago();
 
-							utils.makeNumbersHumanReadable($('.profile-card .human-readable-number'));
+						utils.makeNumbersHumanReadable(
+							$(".profile-card .human-readable-number"),
+						);
 
-							// Bind exit events
-							$('html').off(exitEvent).on(exitEvent, function() {
+						// Bind exit events
+						$("html")
+							.off(exitEvent)
+							.on(exitEvent, function () {
 								if (currentCard) {
 									destroyCard(currentCard, true);
 								}
 							});
 
-							// I don't remember what this does
-							$('.profile-card').off(exitEvent).on(exitEvent, function(e) {
+						// I don't remember what this does
+						$(".profile-card")
+							.off(exitEvent)
+							.on(exitEvent, function (e) {
 								e.stopPropagation();
 							});
 
-							currentCard = target;
-						}
-					});
-				},
-				cache: false
-			});
-		}, 500);
+						currentCard = target;
+					}
+				});
+			},
+			cache: false,
+		});
 	}
 
 	function destroyCard(target, instantly) {
 		if (instantly) {
-			target.popover('dispose');
+			target.popover("dispose");
 			currentCard = null;
 		} else {
-			return setTimeout(function() {
-				target.popover('dispose');
+			return setTimeout(function () {
+				target.popover("dispose");
 				currentCard = null;
 			}, 500);
 		}
 	}
 
-	function calculatePopoverPosition(target){
+	function calculatePopoverPosition(target) {
 		var offset = target.offset();
 		var width = $(document).width();
 		var height = $(document).height();
 
 		if (offset.left > 300) {
-			return 'left';
+			return "left";
 		}
 
 		if (width - offset.left > 300) {
-			return 'right';
+			return "right";
 		}
 
 		if (offset.top > 400) {
-			return 'top';
+			return "top";
 		}
 
 		if (height - offset.top > 400) {
-			return 'bottom';
+			return "bottom";
 		}
 
-		return 'right';
+		return "right";
 	}
 
-	app.createUserTooltips = function() {
+	app.createUserTooltips = function () {
 		// override with empty function because we don't want this function to execute
 		// so metal
 	};
-
 })(window);
